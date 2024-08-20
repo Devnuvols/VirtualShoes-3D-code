@@ -7,17 +7,37 @@
 
 import SwiftUI
 import RealityKit
-import RealityKitContent
 
 struct ContentView: View {
+    @State var shoesVM  = ShoesViewModel()
+    @State private var selectedShoe: ShoeModel?
+    
     var body: some View {
-        VStack {
-            Model3D(named: "Scene", bundle: realityKitContentBundle)
-                .padding(.bottom, 50)
-
-            Text("Hello, world!")
+        NavigationSplitView {
+            List(selection: $selectedShoe){
+                ForEach(shoesVM.shoes) { shoe in Text(shoe.name)
+                        .tag(shoe)
+                    
+                }
+            }
+            .navigationTitle("Zapatos")
+            .navigationSplitViewColumnWidth(200)
+        } content: {
+            if let selectedShoe {
+                Text(selectedShoe.name)
+                //shoeDetail(selectedShoe: selectedShoe)
+            } else {
+                Text("Seleccionar un zapato de la lista")
+            }
+        } detail: {
+            
         }
-        .padding()
+        .alert("App error",
+               isPresented: $shoesVM.showAlert) {} message: {
+            Text(shoesVM.errorMsg)
+        }
+        
+        
     }
 }
 
